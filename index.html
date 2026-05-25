@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Videoke Remote</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at top, #4c1d95, #020617 60%);
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body class="p-4">
+
+<h1 class="text-3xl font-bold mb-4">Videoke Remote</h1>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  push,
+  set,
+  onValue,
+  remove
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCFUZe8BZKPzU5E_es0Gv5xsqkliB3tTes",
+  authDomain: "admin-panel-87530.firebaseapp.com",
+  databaseURL: "https://admin-panel-87530-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "admin-panel-87530",
+  storageBucket: "admin-panel-87530.firebasestorage.app",
+  messagingSenderId: "1065643470010",
+  appId: "1:1065643470010:web:ea79e85fef283dfb05a683",
+  measurementId: "G-YSCLM1KL0Z"
+};
+
+const YOUTUBE_API_KEY = "AIzaSyCjypKwyZIFnC9W0PfmlnPOQWTKcDudhEc";
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const room = "main-room";
+
+function roomRef(path="") {
+  return ref(db, `videokeRooms/${room}/${path}`);
+}
+
+async function searchYouTube(query) {
+  const url = new URL("https://www.googleapis.com/youtube/v3/search");
+
+  url.search = new URLSearchParams({
+    key: YOUTUBE_API_KEY,
+    part: "snippet",
+    q: query + " karaoke",
+    type: "video",
+    maxResults: "5"
+  });
+
+  const res = await fetch(url);
+  const data = await res.json();
+
+  return data.items || [];
+}
+
+async function addSong(videoId, title) {
+  await set(push(roomRef("queue")), {
+    videoId,
+    title,
+    createdAt: Date.now()
+  });
+}
+
+window.searchSong = async function () {
+  const query = document.getElementById("query").value;
+
+  const results = await searchYouTube(query);
+
+  const list = document.getElementById("results");
+  list.innerHTML = "";
+
+  results.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "bg-slate-900 p-3 rounded-xl mb-3";
+
+    div.innerHTML = `
+      <img src="${item.snippet.thumbnails.medium.url}" class="rounded-xl mb-2">
+      <div class="font-bold mb-2">${item.snippet.title}</div>
+      <button class="bg-fuchsia-500 px-4 py-2 rounded-xl">
+        Add Queue
+      </button>
+    `;
+
+    div.querySelector("button").onclick = () => {
+      addSong(item.id.videoId, item.snippet.title);
+    };
+
+    list.appendChild(div);
+  });
+};
+
+window.sendCommand = async function(command) {
+  await set(push(roomRef("commands")), {
+    type: command,
+    createdAt: Date.now()
+  });
+};
+
+function loadQueue() {
+  onValue(roomRef("queue"), snapshot => {
+    const queue = document.getElementById("queue");
+    queue.innerHTML = "";
+
+    let count = 1;
+
+    snapshot.forEach(child => {
+      const item = child.val();
+
+      const div = document.createElement("div");
+      div.className = "bg-slate-900 p-3 rounded-xl mb-3 flex justify-between items-center";
+
+      div.innerHTML = `
+        <div>
+          <div class="font-bold">#${count} ${item.title}</div>
+        </div>
+
+        <button class="bg-red-500 px-3 py-2 rounded-xl">
+          Remove
+        </button>
+      `;
+
+      div.querySelector("button").onclick = async () => {
+        await remove(roomRef("queue/" + child.key));
+      };
+
+      queue.appendChild(div);
+
+      count++;
+    });
+  });
+}
+
+loadQueue();
+
+</script>
+
+<div class="grid gap-3 mb-4">
+  <input
+    id="query"
+    placeholder="Search karaoke song..."
+    class="p-4 rounded-xl text-black"
+  />
+
+  <button
+    onclick="searchSong()"
+    class="bg-fuchsia-500 p-4 rounded-xl font-bold"
+  >
+    Search
+  </button>
+</div>
+
+<div id="results" class="mb-6"></div>
+
+<div class="grid grid-cols-2 gap-3 mb-6">
+  <button onclick="sendCommand('play')" class="bg-green-500 p-4 rounded-xl font-bold">
+    Play
+  </button>
+
+  <button onclick="sendCommand('pause')" class="bg-yellow-500 p-4 rounded-xl font-bold">
+    Pause
+  </button>
+
+  <button onclick="sendCommand('next')" class="bg-fuchsia-500 p-4 rounded-xl font-bold">
+    Next
+  </button>
+
+  <button onclick="sendCommand('replay')" class="bg-blue-500 p-4 rounded-xl font-bold">
+    Replay
+  </button>
+</div>
+
+<h2 class="text-2xl font-bold mb-3">Queue</h2>
+
+<div id="queue"></div>
+
+</body>
+</html>

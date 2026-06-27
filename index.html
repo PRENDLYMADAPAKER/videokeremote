@@ -406,7 +406,7 @@
         document.querySelectorAll(".playNow").forEach(btn => {
           btn.addEventListener("click", async () => {
             const ok = await playNowSong(JSON.parse(btn.dataset.song));
-            if (ok) { btn.textContent = "Rendering ✓"; btn.disabled = true; btn.className = "rounded-md bg-emerald-950/40 text-emerald-400 border border-emerald-500/20 p-2 text-[10px] font-bold uppercase cursor-default"; }
+            if (ok) { btn.textContent = "Playing"; btn.disabled = true; btn.className = "rounded-md bg-emerald-950/40 text-emerald-400 border border-emerald-500/20 p-2 text-[10px] font-bold uppercase cursor-default"; }
           });
         });
 

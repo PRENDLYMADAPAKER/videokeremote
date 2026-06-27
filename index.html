@@ -56,7 +56,6 @@
     <!-- Console Header System Component -->
     <header class="flex items-center justify-between gap-3 pt-2">
       <div>
-        <p class="text-[10px] uppercase tracking-[0.25em] font-black text-amber-500/80">Wireless Controller</p>
         <h1 class="text-2xl font-black tracking-tight text-white">NZM Remote</h1>
       </div>
 
@@ -69,13 +68,13 @@
     <!-- Scanner Module -->
     <section class="glass rounded-lg border border-white/5 p-4 shadow-md">
       <button id="scanBtn" class="w-full rounded-md bg-amber-500 p-3.5 text-xs font-black uppercase tracking-wider text-slate-950 shadow-md transition active:scale-[0.99]">
-        📷 Scan TV QR Code
+        Scan TV QR Code
       </button>
 
       <div id="readerWrap" class="hidden">
         <div id="reader" class="overflow-hidden rounded-md bg-black mt-3 border border-white/10"></div>
         <button id="stopScanBtn" class="mt-3 w-full rounded-md bg-slate-800 p-3 text-xs font-bold text-slate-300">
-          Stop Scanner Pipeline
+          Stop Scanner
         </button>
       </div>
 
@@ -86,17 +85,13 @@
 
     <!-- Search Engine Section -->
     <section class="glass rounded-lg border border-white/5 p-4 shadow-md space-y-3">
-      <div>
-        <label class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1.5">1. Identify Performer</label>
-        <input id="singerInput" class="w-full rounded-md bg-slate-950 p-3.5 text-sm ring-1 ring-white/10 focus:outline-none focus:ring-amber-500/40 transition" placeholder="Enter singer name (e.g., John)">
-      </div>
 
       <div class="space-y-2">
-        <label class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-0.5">2. Find Videoke Track</label>
+        <label class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-0.5">Find Videoke Track</label>
         <input id="searchInput" class="w-full rounded-md bg-slate-950 p-3.5 text-sm ring-1 ring-white/10 focus:outline-none focus:ring-amber-500/40 transition" placeholder="Search song title or tracks...">
         <!-- Search button positioned below the search input field -->
         <button id="searchBtn" class="w-full rounded-md bg-slate-100 p-3.5 text-xs font-black uppercase tracking-wider text-slate-950 shadow-md transition active:scale-[0.99]">
-          🔍 Execute Song Query
+          Search
         </button>
       </div>
     </section>
@@ -115,12 +110,12 @@
         <button data-command="play" class="cmd rounded-md bg-zinc-900 border border-zinc-800 p-4 text-xs font-black uppercase tracking-wider text-white shadow-sm transition active:scale-[0.97]">▶ Play / Resume</button>
         <button data-command="pause" class="cmd rounded-md bg-zinc-900 border border-zinc-800 p-4 text-xs font-black uppercase tracking-wider text-white shadow-sm transition active:scale-[0.97]">|| Pause</button>
         <button data-command="replay" class="cmd rounded-md bg-zinc-900 border border-zinc-800 p-4 text-xs font-black uppercase tracking-wider text-white shadow-sm transition active:scale-[0.97]">↺ Replay Track</button>
-        <button data-command="next" class="cmd rounded-md bg-amber-500 p-4 text-xs font-black uppercase tracking-wider text-slate-950 shadow-md transition active:scale-[0.97]">Skip Track ≫</button>
+        <button data-command="next" class="cmd rounded-md bg-amber-500 p-4 text-xs font-black uppercase tracking-wider text-slate-950 shadow-md transition active:scale-[0.97]">Next ≫</button>
       </div>
 
       <div class="mt-4 pt-2 border-t border-white/5">
         <div class="flex items-center justify-between text-xs font-bold text-slate-400 mb-1">
-          <span>Master Volume Pipeline</span>
+          <span>Master Volume</span>
           <span class="text-amber-400 font-black"><span id="volumeText">80</span>%</span>
         </div>
         <input id="volumeRange" type="range" min="0" max="100" value="80" class="w-full h-1.5 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-amber-500">
